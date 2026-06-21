@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
@@ -10,12 +12,12 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import { Button } from '../../components/auth/Button';
 import { TextField } from '../../components/auth/TextField';
+import { login } from '../../components/core/request';
 
 type LoginFormValues = {
-  mobile: string;
+  phone: string;
   password: string;
 };
 
@@ -27,14 +29,27 @@ export default function LoginScreen() {
     formState: { isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      mobile: '',
-      password: '',
+      phone: '9876543234',
+      password: '123456',
     },
   });
 
-  const onSubmit = (values: LoginFormValues) => {
-    void values;
-    router.replace('/home');
+  const onSubmit = async (values: LoginFormValues) => {
+    try {
+      const response = await login(values);
+      const { token, user } = response?.data || {};
+      await AsyncStorage.setItem(
+        'auth',
+        JSON.stringify({
+          token,
+          user,
+        })
+      );
+      router.replace('/home');
+    } catch (error: any) {
+      const message = error?.response?.data?.message || 'Something went wrong';
+      console.log(message);
+    }
   };
 
   return (
@@ -50,7 +65,6 @@ export default function LoginScreen() {
             flexGrow: 1,
           }}>
           {/* HEADER */}
-
           <View className="items-center px-6 pt-10">
             <View className="h-20 w-20 items-center justify-center rounded-full bg-white">
               <Text className="text-4xl">🛡️</Text>
@@ -83,18 +97,18 @@ export default function LoginScreen() {
               <Text className="mt-2 text-center text-gray-500">Sign in to continue</Text>
             </View>
 
-            {/* Mobile */}
+            {/* phone */}
 
             <Controller
               control={control}
-              name="mobile"
+              name="phone"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextField
-                  label="Mobile Number"
+                  label="phone Number"
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder="Enter Mobile Number"
+                  placeholder="Enter phone Number"
                   keyboardType="phone-pad"
                   containerClassName="mt-8"
                 />
