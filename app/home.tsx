@@ -58,7 +58,6 @@ function AnimatedFeatureCard({
   return (
     <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
       <FeatureCard
-      
         icon={icon}
         title={title}
         description={description}
