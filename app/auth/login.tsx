@@ -1,38 +1,67 @@
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RichPaperPlaneLoader from 'components/UI/PaperPlaneLoader';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+  ActivityIndicator,
+  Animated,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StatusBar,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button } from '../../components/auth/Button';
-import { TextField } from '../../components/auth/TextField';
 import { login } from '../../components/core/request';
-
-// 1. Import your custom PaperPlane Loader component
-
-// Example of importing useQuery if you are fetching statistics on this screen
-// import { useQuery } from '@tanstack/react-query';
 
 type LoginFormValues = {
   phone: string;
   password: string;
 };
 
+function FadeInView({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        delay,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 500,
+        delay,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        transform: [{ translateY: slideAnim }],
+      }}>
+      {children}
+    </Animated.View>
+  );
+}
+
 export default function LoginScreen() {
   const router = useRouter();
 
-  // Example React Query hook fetching your missing/found stats
-  // const { data: stats, isFetching } = useQuery({ queryKey: ['dashboardStats'], queryFn: fetchStats });
-  const isFetching = false; // Placeholder: set to true or pull from your real useQuery hook
+  const isFetching = false;
 
   const {
     control,
@@ -68,8 +97,8 @@ export default function LoginScreen() {
   if (showLoader) return <RichPaperPlaneLoader />;
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F4B942]">
-      <StatusBar barStyle="dark-content" backgroundColor="#F4B942" />
+    <SafeAreaView className="flex-1 bg-[#F8FAFC]">
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
       <KeyboardAvoidingView
         className="flex-1"
@@ -78,95 +107,411 @@ export default function LoginScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             flexGrow: 1,
-          }}>
-          {/* HEADER */}
-          <View className="items-center px-6 pt-10">
-            <View className="h-20 w-20 items-center justify-center rounded-full bg-white">
-              <Text className="text-4xl">🛡️</Text>
-            </View>
-            <Text className="mt-6 text-4xl font-black text-black">Hello</Text>
-            <Text className="mt-2 text-lg text-black">Welcome Back!</Text>
-            <Text className="mt-2 text-center text-black/70">
-              Missing & Found Person Management System
-            </Text>
-          </View>
-
-          {/* FORM CARD */}
-          <View className="mt-8 flex-1 rounded-t-[40px] bg-white px-6 pb-10 pt-8">
-            <View className="items-center">
-              <Text className="text-3xl font-bold text-gray-900">Login Account</Text>
-              <Text className="mt-2 text-center text-gray-500">Sign in to continue</Text>
-            </View>
-
-            {/* Phone */}
-            <Controller
-              control={control}
-              name="phone"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  label="phone Number"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Enter phone Number"
-                  keyboardType="phone-pad"
-                  containerClassName="mt-8"
-                />
-              )}
+          }}
+          keyboardShouldPersistTaps="handled">
+          {/* ===== HERO GRADIENT HEADER ===== */}
+          <LinearGradient
+            colors={['#0DB893', '#0891B2', '#6366F1']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{
+              paddingTop: Platform.OS === 'ios' ? 60 : 48,
+              paddingBottom: 36,
+              paddingHorizontal: 28,
+              overflow: 'hidden',
+              position: 'relative',
+            }}>
+            {/* Decorative circles */}
+            <View
+              style={{
+                position: 'absolute',
+                width: 220,
+                height: 220,
+                borderRadius: 110,
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                top: -60,
+                right: -50,
+              }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                width: 150,
+                height: 150,
+                borderRadius: 75,
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                bottom: -40,
+                left: -30,
+              }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                width: 80,
+                height: 80,
+                borderRadius: 40,
+                backgroundColor: 'rgba(255,255,255,0.04)',
+                top: 40,
+                left: '60%',
+              }}
             />
 
-            {/* Password */}
-            <Controller
-              control={control}
-              name="password"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextField
-                  label="Password"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder="Enter Password"
-                  secureTextEntry
-                  containerClassName="mt-5"
-                />
-              )}
-            />
-
-            {/* Remember */}
-            <View className="mt-5 flex-row items-center justify-between">
-              <View className="flex-row items-center">
-                <View className="mr-2 h-4 w-4 rounded-full bg-green-500" />
-                <Text className="text-gray-600">Remember Me</Text>
+            <FadeInView delay={100}>
+              {/* Shield icon */}
+              <View
+                style={{
+                  height: 72,
+                  width: 72,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 36,
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  borderWidth: 2,
+                  borderColor: 'rgba(255, 255, 255, 0.35)',
+                  shadowColor: '#000',
+                  shadowOpacity: 0.15,
+                  shadowRadius: 10,
+                  shadowOffset: { width: 0, height: 4 },
+                  elevation: 5,
+                }}>
+                <Ionicons name="shield-checkmark" size={32} color="#FFFFFF" />
               </View>
-              <TouchableOpacity>
-                <Text className="font-medium text-gray-700">Forgot Password?</Text>
-              </TouchableOpacity>
-            </View>
+
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: '800',
+                  color: '#FFFFFF',
+                  letterSpacing: 0.5,
+                  marginTop: 20,
+                }}>
+                Welcome Back
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  marginTop: 6,
+                  lineHeight: 22,
+                  maxWidth: '85%',
+                }}>
+                Sign in to manage missing & found person cases
+              </Text>
+            </FadeInView>
+          </LinearGradient>
+
+          {/* ===== FORM CARD ===== */}
+          <View
+            style={{
+              marginTop: -24,
+              borderTopLeftRadius: 32,
+              borderTopRightRadius: 32,
+              backgroundColor: '#FFFFFF',
+              paddingHorizontal: 24,
+              paddingTop: 28,
+              paddingBottom: 40,
+              shadowColor: '#000',
+              shadowOpacity: 0.04,
+              shadowRadius: 12,
+              shadowOffset: { width: 0, height: -4 },
+              elevation: 4,
+            }}>
+            <FadeInView delay={250}>
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontWeight: '700',
+                  color: '#111827',
+                  textAlign: 'center',
+                }}>
+                Login Account
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#6B7280',
+                  textAlign: 'center',
+                  marginTop: 6,
+                }}>
+                Enter your credentials to continue
+              </Text>
+            </FadeInView>
+
+            {/* Phone Input */}
+            <FadeInView delay={350}>
+              <View style={{ marginTop: 28 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: 6,
+                    marginLeft: 4,
+                    letterSpacing: 0.3,
+                  }}>
+                  PHONE NUMBER
+                </Text>
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: '#F8FAFC',
+                        borderWidth: 1.5,
+                        borderColor: '#E2E8F0',
+                        borderRadius: 14,
+                        height: 54,
+                        paddingHorizontal: 16,
+                      }}>
+                      <Ionicons
+                        name="call-outline"
+                        size={18}
+                        color="#94A3B8"
+                        style={{ marginRight: 12 }}
+                      />
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="Enter phone number"
+                        placeholderTextColor="#94A3B8"
+                        keyboardType="phone-pad"
+                        style={{
+                          flex: 1,
+                          fontSize: 15,
+                          color: '#111827',
+                          height: '100%',
+                        }}
+                        className="placeholder:text-gray-400"
+                      />
+                      {value ? (
+                        <Ionicons name="checkmark-circle" size={18} color="#0DB893" />
+                      ) : null}
+                    </View>
+                  )}
+                />
+              </View>
+            </FadeInView>
+
+            {/* Password Input */}
+            <FadeInView delay={420}>
+              <View style={{ marginTop: 18 }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: 6,
+                    marginLeft: 4,
+                    letterSpacing: 0.3,
+                  }}>
+                  PASSWORD
+                </Text>
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: '#F8FAFC',
+                        borderWidth: 1.5,
+                        borderColor: '#E2E8F0',
+                        borderRadius: 14,
+                        height: 54,
+                        paddingHorizontal: 16,
+                      }}>
+                      <Ionicons
+                        name="lock-closed-outline"
+                        size={18}
+                        color="#94A3B8"
+                        style={{ marginRight: 12 }}
+                      />
+                      <TextInput
+                        value={value}
+                        onChangeText={onChange}
+                        onBlur={onBlur}
+                        placeholder="Enter password"
+                        placeholderTextColor="#94A3B8"
+                        secureTextEntry
+                        style={{
+                          flex: 1,
+                          fontSize: 15,
+                          color: '#111827',
+                          height: '100%',
+                        }}
+                        className="placeholder:text-gray-400"
+                      />
+                      <TouchableOpacity>
+                        <Ionicons name="eye-off-outline" size={18} color="#94A3B8" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+              </View>
+            </FadeInView>
+
+            {/* Remember & Forgot */}
+            <FadeInView delay={490}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 16,
+                }}>
+                <TouchableOpacity
+                  style={{ flexDirection: 'row', alignItems: 'center' }}
+                  activeOpacity={0.7}>
+                  <View
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 6,
+                      borderWidth: 2,
+                      borderColor: '#0DB893',
+                      backgroundColor: '#0DB893',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginRight: 8,
+                    }}>
+                    <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                  </View>
+                  <Text style={{ fontSize: 13, color: '#4B5563', fontWeight: '500' }}>
+                    Remember Me
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <Text style={{ fontSize: 13, color: '#0DB893', fontWeight: '600' }}>
+                    Forgot Password?
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </FadeInView>
 
             {/* Login Button */}
-            <Button
-              title="Login Account"
-              onPress={handleSubmit(onSubmit)}
-              disabled={showLoader}
-              className="mt-8"
-            />
+            <FadeInView delay={560}>
+              <Pressable
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+                style={({ pressed }) => ({
+                  marginTop: 100,
+                  borderRadius: 100,
+                  borderWidth: 2,
+                  borderColor: '#0DB893',
+                  shadowColor: '#0DB893',
+                  shadowOpacity: pressed ? 0.45 : 0.3,
+                  shadowRadius: pressed ? 20 : 14,
+                  shadowOffset: { width: 0, height: pressed ? 8 : 6 },
+                  elevation: pressed ? 10 : 6,
+                  transform: [{ scale: pressed ? 0.97 : 1 }],
+                  opacity: isSubmitting ? 0.75 : 1,
+                })}>
+                <LinearGradient
+                  colors={['#0DB893', '#0891B2', '#0A9A7E']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    marginTop: 20,
+                    height: 60,
+                    borderRadius: 7,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                    paddingHorizontal: 32,
+                  }}>
+                  {isSubmitting ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <>
+                      <Ionicons
+                        name="log-in-outline"
+                        size={22}
+                        color="#FFFFFF"
+                        style={{ marginRight: 10 }}
+                      />
+                      <Text
+                        style={{
+                          fontSize: 17,
+                          fontWeight: '800',
+                          color: '#FFFFFF',
+                          letterSpacing: 0.8,
+                        }}>
+                        Login Account
+                      </Text>
+                    </>
+                  )}
+                </LinearGradient>
+              </Pressable>
+            </FadeInView>
 
-            {/* Register */}
-            <TouchableOpacity className="mt-6 items-center">
-              <Text className="font-medium text-gray-700">Create New Account</Text>
-            </TouchableOpacity>
+            {/* OR Divider */}
+            <FadeInView delay={630}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 24,
+                }}>
+                <View style={{ flex: 1, height: 1, backgroundColor: '#F1F5F9' }} />
+                <Text
+                  style={{
+                    marginHorizontal: 16,
+                    fontSize: 12,
+                    color: '#94A3B8',
+                    fontWeight: '600',
+                    letterSpacing: 0.5,
+                  }}>
+                  OR
+                </Text>
+                <View style={{ flex: 1, height: 1, backgroundColor: '#F1F5F9' }} />
+              </View>
+            </FadeInView>
 
-            {/* Stats */}
-            <View className="mt-10 flex-row">
-              <View className="mr-2 flex-1 rounded-3xl bg-amber-50 p-4">
-                <Text className="text-3xl font-bold text-black">25</Text>
-                <Text className="mt-1 text-gray-600">Missing Cases</Text>
+            {/* Register link */}
+            <FadeInView delay={700}>
+              <TouchableOpacity
+                style={{
+                  marginTop: 20,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}
+                activeOpacity={0.7}>
+                <Text style={{ fontSize: 14, color: '#6B7280', fontWeight: '500' }}>
+                  {"Don't have an account? "}
+                </Text>
+                <Text style={{ fontSize: 14, color: '#0DB893', fontWeight: '700' }}>
+                  Create Account
+                </Text>
+              </TouchableOpacity>
+            </FadeInView>
+
+            {/* Security badge */}
+            <FadeInView delay={770}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 24,
+                }}>
+                <Ionicons name="shield-outline" size={14} color="#94A3B8" />
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: '#94A3B8',
+                    marginLeft: 6,
+                    fontWeight: '500',
+                  }}>
+                  Secured with end-to-end encryption
+                </Text>
               </View>
-              <View className="ml-2 flex-1 rounded-3xl bg-green-50 p-4">
-                <Text className="text-3xl font-bold text-black">14</Text>
-                <Text className="mt-1 text-gray-600">Found Persons</Text>
-              </View>
-            </View>
+            </FadeInView>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
