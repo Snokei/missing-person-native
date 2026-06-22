@@ -1,140 +1,145 @@
+import { useAppStore } from '@/store/useAppStore';
 import { Ionicons } from '@expo/vector-icons';
 import { BLUE, BLUE_BG, BLUE_LIGHT, BLUE_MID } from 'components/core/const';
 import { ScreenTransition } from 'components/UI/ScreenTransition';
 import { useLocationTracking } from 'hooks/useLocationTracking';
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTracking } from 'services/getLocation';
 
 export default function LocationScreen() {
+  const userInfo = useAppStore((state) => state.userInfo);
   const { copyLocation, savedLocation, trackingEnabled, isExpoGo } = useLocationTracking();
   const lastUpdatedLabel = savedLocation
     ? new Date(savedLocation.timestamp).toLocaleString()
     : null;
 
+  const payload = {
+    user_id: userInfo?.user?.id,
+    latitude: savedLocation?.latitude,
+    longitude: savedLocation?.longitude,
+  };
+  useTracking(payload);
   return (
     <ScreenTransition>
-    <SafeAreaView style={styles.safeArea}>
-      {/* Header */}
-      <View style={styles.header}>
-        <View style={styles.headerIconBox}>
-          <Ionicons name="navigate" size={22} color={BLUE} />
-        </View>
-        <View>
-          <Text style={styles.headerTitle}>Location Tracker</Text>
-          <Text style={styles.headerSub}>Real-time GPS monitoring</Text>
-        </View>
-      </View>
-
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        {/* Status Card */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <View
-              style={[
-                styles.statusDot,
-                { backgroundColor: trackingEnabled ? '#22C55E' : '#EF4444' },
-              ]}
-            />
-            <Text style={styles.cardTitle}>
-              Background Tracking: {trackingEnabled ? 'Active' : 'Inactive'}
-            </Text>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerIconBox}>
+            <Ionicons name="navigate" size={22} color={BLUE} />
           </View>
-          <Text style={styles.cardDesc}>
-            {isExpoGo
-              ? 'Expo Go supports foreground GPS only. Build a dev client for background tracking.'
-              : 'Background tracking continuously saves the latest GPS fix even when the app is closed.'}
-          </Text>
-          <View style={styles.infoBadge}>
-            <Ionicons name="information-circle-outline" size={15} color={BLUE} />
-            <Text style={styles.infoBadgeText}>
-              GPS permission is requested automatically when the app opens.
-            </Text>
+          <View>
+            <Text style={styles.headerTitle}>Location Tracker</Text>
+            <Text style={styles.headerSub}>Real-time GPS monitoring</Text>
           </View>
         </View>
 
-        {/* Coordinates Card */}
-        <View style={styles.card}>
-          <View style={styles.cardHeaderRow}>
-            <View style={styles.cardIconBox}>
-              <Ionicons name="location" size={20} color={BLUE} />
-            </View>
-            <View>
-              <Text style={styles.cardTitle}>GPS Coordinates</Text>
-              <Text style={styles.cardSubtitle}>Tap a value to copy it</Text>
-            </View>
-          </View>
-
-          {savedLocation ? (
-            <>
-              <TouchableOpacity
-                style={styles.coordRow}
-                onPress={() => void copyLocation('Latitude', savedLocation.latitude)}>
-                <View style={styles.coordLabelRow}>
-                  <Ionicons name="swap-vertical-outline" size={14} color={BLUE} />
-                  <Text style={styles.coordLabel}>Latitude</Text>
-                </View>
-                <View style={styles.coordValueRow}>
-                  <Text style={styles.coordValue}>{savedLocation.latitude}</Text>
-                  <Ionicons name="copy-outline" size={14} color={BLUE} style={styles.copyIcon} />
-                </View>
-              </TouchableOpacity>
-
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                style={styles.coordRow}
-                onPress={() => void copyLocation('Longitude', savedLocation.longitude)}>
-                <View style={styles.coordLabelRow}>
-                  <Ionicons name="swap-horizontal-outline" size={14} color={BLUE} />
-                  <Text style={styles.coordLabel}>Longitude</Text>
-                </View>
-                <View style={styles.coordValueRow}>
-                  <Text style={styles.coordValue}>{savedLocation.longitude}</Text>
-                  <Ionicons name="copy-outline" size={14} color={BLUE} style={styles.copyIcon} />
-                </View>
-              </TouchableOpacity>
-
-              {lastUpdatedLabel && (
-                <View style={styles.timestampRow}>
-                  <Ionicons name="time-outline" size={13} color="#6B7280" />
-                  <Text style={styles.timestampText}>
-                    Last fix:{' '}
-                    <Text style={{ fontWeight: '600', color: '#374151' }}>{lastUpdatedLabel}</Text>
-                  </Text>
-                </View>
-              )}
-
-              <Text style={styles.refreshNote}>
-                Refreshes every 1 minute while the app is open.
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}>
+          {/* Status Card */}
+          <View style={styles.card}>
+            <View style={styles.cardHeader}>
+              <View
+                style={[
+                  styles.statusDot,
+                  { backgroundColor: trackingEnabled ? '#22C55E' : '#EF4444' },
+                ]}
+              />
+              <Text style={styles.cardTitle}>
+                Background Tracking: {trackingEnabled ? 'Active' : 'Inactive'}
               </Text>
-            </>
-          ) : (
-            <View style={styles.emptyState}>
-              <Ionicons name="location-outline" size={40} color={BLUE_MID} />
-              <Text style={styles.emptyText}>GPS location not fetched yet.</Text>
-              <Text style={styles.emptySubText}>Ensure location permission is granted.</Text>
+            </View>
+            <Text style={styles.cardDesc}>
+              {isExpoGo
+                ? 'Expo Go supports foreground GPS only. Build a dev client for background tracking.'
+                : 'Background tracking continuously saves the latest GPS fix even when the app is closed.'}
+            </Text>
+            <View style={styles.infoBadge}>
+              <Ionicons name="information-circle-outline" size={15} color={BLUE} />
+              <Text style={styles.infoBadgeText}>
+                GPS permission is requested automatically when the app opens.
+              </Text>
+            </View>
+          </View>
+
+          {/* Coordinates Card */}
+          <View style={styles.card}>
+            <View style={styles.cardHeaderRow}>
+              <View style={styles.cardIconBox}>
+                <Ionicons name="location" size={20} color={BLUE} />
+              </View>
+              <View>
+                <Text style={styles.cardTitle}>GPS Coordinates</Text>
+                <Text style={styles.cardSubtitle}>Tap a value to copy it</Text>
+              </View>
+            </View>
+
+            {savedLocation ? (
+              <>
+                <TouchableOpacity
+                  style={styles.coordRow}
+                  onPress={() => void copyLocation('Latitude', savedLocation.latitude)}>
+                  <View style={styles.coordLabelRow}>
+                    <Ionicons name="swap-vertical-outline" size={14} color={BLUE} />
+                    <Text style={styles.coordLabel}>Latitude</Text>
+                  </View>
+                  <View style={styles.coordValueRow}>
+                    <Text style={styles.coordValue}>{savedLocation.latitude}</Text>
+                    <Ionicons name="copy-outline" size={14} color={BLUE} style={styles.copyIcon} />
+                  </View>
+                </TouchableOpacity>
+
+                <View style={styles.divider} />
+
+                <TouchableOpacity
+                  style={styles.coordRow}
+                  onPress={() => void copyLocation('Longitude', savedLocation.longitude)}>
+                  <View style={styles.coordLabelRow}>
+                    <Ionicons name="swap-horizontal-outline" size={14} color={BLUE} />
+                    <Text style={styles.coordLabel}>Longitude</Text>
+                  </View>
+                  <View style={styles.coordValueRow}>
+                    <Text style={styles.coordValue}>{savedLocation.longitude}</Text>
+                    <Ionicons name="copy-outline" size={14} color={BLUE} style={styles.copyIcon} />
+                  </View>
+                </TouchableOpacity>
+
+                {lastUpdatedLabel && (
+                  <View style={styles.timestampRow}>
+                    <Ionicons name="time-outline" size={13} color="#6B7280" />
+                    <Text style={styles.timestampText}>
+                      Last fix:{' '}
+                      <Text style={{ fontWeight: '600', color: '#374151' }}>
+                        {lastUpdatedLabel}
+                      </Text>
+                    </Text>
+                  </View>
+                )}
+
+                <Text style={styles.refreshNote}>
+                  Refreshes every 1 minute while the app is open.
+                </Text>
+              </>
+            ) : (
+              <View style={styles.emptyState}>
+                <Ionicons name="location-outline" size={40} color={BLUE_MID} />
+                <Text style={styles.emptyText}>GPS location not fetched yet.</Text>
+                <Text style={styles.emptySubText}>Ensure location permission is granted.</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Note card */}
+          {lastUpdatedLabel && (
+            <View style={styles.noteCard}>
+              <Ionicons name="alert-circle-outline" size={15} color={BLUE} />
+              <Text style={styles.noteText}>
+                The time above is when the last GPS reading was recorded, not the refresh interval.
+              </Text>
             </View>
           )}
-        </View>
-
-        {/* Note card */}
-        {lastUpdatedLabel && (
-          <View style={styles.noteCard}>
-            <Ionicons name="alert-circle-outline" size={15} color={BLUE} />
-            <Text style={styles.noteText}>
-              The time above is when the last GPS reading was recorded, not the refresh interval.
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
     </ScreenTransition>
   );
 }

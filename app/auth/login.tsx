@@ -1,3 +1,4 @@
+import { useAppStore } from '@/store/useAppStore';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RichPaperPlaneLoader from 'components/UI/PaperPlaneLoader';
@@ -62,6 +63,7 @@ function FadeInView({ children, delay = 0 }: { children: React.ReactNode; delay?
 export default function LoginScreen() {
   const router = useRouter();
   const { showAlert } = useAlertPanel();
+  const setLoginUser = useAppStore((state) => state.setLoginUser);
 
   const isFetching = false;
 
@@ -80,13 +82,12 @@ export default function LoginScreen() {
     try {
       const response = await login(values);
       const { token, user } = response?.data || {};
-      await AsyncStorage.setItem(
-        'auth',
-        JSON.stringify({
-          token,
-          user,
-        })
-      );
+      const userData = {
+        token,
+        user,
+      };
+      setLoginUser(userData);
+      await AsyncStorage.setItem('auth', JSON.stringify(userData));
       router.replace('/home');
     } catch (error: any) {
       const message = error?.response?.data?.message || 'Something went wrong';
