@@ -20,14 +20,11 @@ export function TextField({
 
   return (
     <View className={containerClassName}>
-      <Text className={`mb-2 font-semibold ${hasError ? 'text-red-600' : 'text-gray-700'}`}>
-        {label}
-      </Text>
-
       <TextInput
-        className={`h-14 rounded-full border bg-gray-50 px-5 ${
+        className={`h-14 rounded-[6px] border bg-gray-50 px-5 ${
           hasError ? 'border-red-500' : 'border-gray-200'
         } ${inputClassName} ${className}`}
+        placeholder={label}
         placeholderTextColor="#9CA3AF"
         {...props}
       />

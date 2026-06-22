@@ -2,11 +2,12 @@ import { Ionicons, Octicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GENDER_OPTIONS, STEP_THEMES, STEPS, TEAL, TEAL_LIGHT } from 'components/core/const';
 import AppDropdown from 'components/UI/AppDropdown';
-import AppInput from 'components/UI/AppInput';
+import { TextField } from 'components/auth/TextField';
 import { ScreenTransition } from 'components/UI/ScreenTransition';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
+  KeyboardAvoidingView,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -65,7 +66,7 @@ export default function MissingScreen() {
   return (
     <ScreenTransition>
     <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.bg }]}>
-      {/* Header — blends into page background */}
+      {/* Header */}
       <View style={[styles.header, { backgroundColor: theme.bg }]}>
         {currentStep > 1 && (
           <TouchableOpacity
@@ -83,10 +84,13 @@ export default function MissingScreen() {
         </View>
       </View>
 
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps="always"
         showsVerticalScrollIndicator={false}>
         {/* Stepper Card */}
         <View style={styles.stepCard}>
@@ -161,12 +165,13 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="fullName"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="person-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Enter full name"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -193,13 +198,14 @@ export default function MissingScreen() {
                 <Controller
                   control={control}
                   name="age"
-                  render={({ field: { onChange, value } }) => (
-                    <AppInput
-                      icon="calendar-number-outline"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextField
                       label="Age"
                       value={value}
                       onChangeText={onChange}
+                      onBlur={onBlur}
                       keyboardType="numeric"
+                      containerClassName="mt-0"
                     />
                   )}
                 />
@@ -210,12 +216,13 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="languages"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="chatbubble-ellipses-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Languages spoken"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -226,13 +233,14 @@ export default function MissingScreen() {
                 <Controller
                   control={control}
                   name="height"
-                  render={({ field: { onChange, value } }) => (
-                    <AppInput
-                      icon="resize-outline"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextField
                       label="Height"
                       value={value}
                       onChangeText={onChange}
+                      onBlur={onBlur}
                       keyboardType="numeric"
+                      containerClassName="mt-0"
                     />
                   )}
                 />
@@ -242,13 +250,14 @@ export default function MissingScreen() {
                 <Controller
                   control={control}
                   name="weight"
-                  render={({ field: { onChange, value } }) => (
-                    <AppInput
-                      icon="barbell-outline"
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextField
                       label="Weight"
                       value={value}
                       onChangeText={onChange}
+                      onBlur={onBlur}
                       keyboardType="numeric"
+                      containerClassName="mt-0"
                     />
                   )}
                 />
@@ -259,12 +268,13 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="medicalCondition"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="medkit-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Medical condition (if any)"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -273,12 +283,13 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="identificationMark"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="finger-print-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Birthmark, tattoo, scar etc."
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -302,12 +313,13 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="reporterName"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="person-circle-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Your full name"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -316,13 +328,14 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="mobileNumber"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="call-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Primary contact number"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   keyboardType="phone-pad"
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -331,27 +344,29 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="alternateNumber"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="phone-portrait-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Alternate contact number"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   keyboardType="phone-pad"
+                  containerClassName="mt-0"
                 />
               )}
             />
 
-            <Text style={styles.fieldLabel}>Relationship to Missing Person</Text>
+            <Text style={styles.fieldLabel}>Relationship</Text>
             <Controller
               control={control}
               name="relationship"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="people-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="e.g. Parent, Sibling, Friend"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -360,16 +375,15 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="address"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="home-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Your address"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   multiline
                   numberOfLines={4}
-                  className="min-h-28"
-                  textAlignVertical="top"
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -465,16 +479,15 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="lastSeenLocation"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="location-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Enter detailed location"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   multiline
                   numberOfLines={3}
-                  className="min-h-24"
-                  textAlignVertical="top"
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -483,16 +496,15 @@ export default function MissingScreen() {
             <Controller
               control={control}
               name="circumstances"
-              render={({ field: { onChange, value } }) => (
-                <AppInput
-                  icon="document-text-outline"
+              render={({ field: { onChange, onBlur, value } }) => (
+                <TextField
                   label="Describe the circumstances"
                   value={value}
                   onChangeText={onChange}
+                  onBlur={onBlur}
                   multiline
                   numberOfLines={5}
-                  className="min-h-32"
-                  textAlignVertical="top"
+                  containerClassName="mt-0"
                 />
               )}
             />
@@ -508,6 +520,7 @@ export default function MissingScreen() {
 
         <View style={{ height: 20 }} />
       </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Bottom Buttons */}
       <View style={styles.bottomBar}>
