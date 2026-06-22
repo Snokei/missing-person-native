@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { login } from '../../components/core/request';
+import { useAlertPanel } from '../../components/helpers/ShowAlert';
 
 type LoginFormValues = {
   phone: string;
@@ -60,6 +61,7 @@ function FadeInView({ children, delay = 0 }: { children: React.ReactNode; delay?
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { showAlert } = useAlertPanel();
 
   const isFetching = false;
 
@@ -88,7 +90,11 @@ export default function LoginScreen() {
       router.replace('/home');
     } catch (error: any) {
       const message = error?.response?.data?.message || 'Something went wrong';
-      console.log(message);
+      showAlert({
+        title: 'Login Failed',
+        message,
+        type: 'error',
+      });
     }
   };
 
