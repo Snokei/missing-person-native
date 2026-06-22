@@ -95,6 +95,16 @@ export default function RootLayout() {
                   headerRight: () => <NotificationBell />,
                 }}
               />
+              <Drawer.Screen
+                name="users"
+                options={{
+                  title: '',
+                  drawerLabel: 'Users',
+                  headerStyle: { backgroundColor: BLUE_BG },
+                  headerLeft: defaultHeaderLeft,
+                  headerRight: () => <NotificationBell />,
+                }}
+              />
             </Drawer>
           </NotificationProvider>
         </AlertProvider>

@@ -16,6 +16,7 @@ export function CustomDrawerContent(props: any) {
     if (route === 'location' && pathname === '/location') return true;
     if (route === 'missing' && pathname === '/missing') return true;
     if (route === 'missing-list' && pathname === '/missing-list') return true;
+    if (route === 'users' && pathname === '/users') return true;
     return false;
   };
 
@@ -60,6 +61,15 @@ export function CustomDrawerContent(props: any) {
       activeColor: '#6366F1',
       activeBg: '#EEF2FF',
       activeBorder: 'rgba(99, 102, 241, 0.3)',
+    },
+    {
+      route: 'users',
+      label: 'Users',
+      icon: 'people' as const,
+      iconLib: 'ionicons' as const,
+      activeColor: '#2563EB',
+      activeBg: '#EFF6FF',
+      activeBorder: 'rgba(37, 99, 235, 0.3)',
     },
   ];
 

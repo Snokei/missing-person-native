@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { BLUE, BLUE_BG, BLUE_LIGHT, BLUE_MID } from 'components/core/const';
 import { ScreenTransition } from 'components/UI/ScreenTransition';
 import { useUsers } from 'hooks/getUsers';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -13,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { PURPLE, PURPLE_BG, PURPLE_LIGHT } from '../components/core/const';
 
 // --- Types ---
 export interface User {
@@ -21,16 +21,20 @@ export interface User {
   name?: string;
   email?: string;
   phone?: string;
+  role?: string;
+  status?: 'active' | 'inactive' | string;
 }
 
 // --- Constants ---
 const COL_WIDTHS = {
-  name: 240,
-  email: 260,
-  phone: 180,
+  name: 220,
+  email: 240,
+  phone: 120,
+  role: 120,
+  status: 120,
 };
 
-export default function MissingListScreen() {
+export default function UsersScreen() {
   const [search, setSearch] = useState('');
   const { data: rawUsers, isFetching, error } = useUsers();
 
@@ -51,7 +55,7 @@ export default function MissingListScreen() {
 
   // --- Helpers ---
   const getInitials = useCallback((name: string) => {
-    if (!name) return 'M';
+    if (!name) return 'U';
     return name
       .split(' ')
       .map((n) => n[0])
@@ -60,10 +64,22 @@ export default function MissingListScreen() {
       .slice(0, 2);
   }, []);
 
+  const getStatusConfig = useCallback((status?: string) => {
+    switch (status?.toLowerCase()) {
+      case 'active':
+        return { color: '#059669', bg: '#D1FAE5' }; // Emerald
+      case 'inactive':
+        return { color: '#DC2626', bg: '#FEE2E2' }; // Red
+      default:
+        return { color: '#4B5563', bg: '#F3F4F6' }; // Gray
+    }
+  }, []);
+
   // --- Renderers ---
   const renderItem = useCallback(
     ({ item, index }: { item: User; index: number }) => {
       const isLast = index === users.length - 1;
+      const statusConfig = getStatusConfig(item.status);
 
       return (
         <View style={[styles.tableRow, isLast && styles.lastRow]}>
@@ -92,10 +108,27 @@ export default function MissingListScreen() {
               {item.phone || '-'}
             </Text>
           </View>
+
+          {/* Role Column */}
+          <View style={[styles.cell, { width: COL_WIDTHS.role }]}>
+            <Text style={styles.cellText} numberOfLines={1}>
+              {item.role || 'User'}
+            </Text>
+          </View>
+
+          {/* Status Column */}
+          <View style={[styles.cell, { width: COL_WIDTHS.status }]}>
+            <View style={[styles.statusBadge, { backgroundColor: statusConfig.bg }]}>
+              <View style={[styles.statusDot, { backgroundColor: statusConfig.color }]} />
+              <Text style={[styles.statusText, { color: statusConfig.color }]}>
+                {(item.status || 'Unknown').toUpperCase()}
+              </Text>
+            </View>
+          </View>
         </View>
       );
     },
-    [users.length, getInitials]
+    [users.length, getInitials, getStatusConfig]
   );
 
   const keyExtractor = useCallback((item: User) => item.id.toString(), []);
@@ -106,11 +139,11 @@ export default function MissingListScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerIconBox}>
-            <Ionicons name="people" size={24} color={PURPLE} />
+            <Ionicons name="people" size={24} color={BLUE} />
           </View>
           <View style={styles.headerTextWrap}>
-            <Text style={styles.headerTitle}>Missing People</Text>
-            <Text style={styles.headerSub}>Active and resolved cases</Text>
+            <Text style={styles.headerTitle}>Users</Text>
+            <Text style={styles.headerSub}>Manage and view all users</Text>
           </View>
         </View>
 
@@ -119,7 +152,7 @@ export default function MissingListScreen() {
           <Ionicons name="search" size={20} color="#9CA3AF" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search by name, email or phone..."
+            placeholder="Search by name, phone or email..."
             placeholderTextColor="#9CA3AF"
             value={search}
             onChangeText={setSearch}
@@ -144,20 +177,22 @@ export default function MissingListScreen() {
                 <Text style={[styles.headerCell, { width: COL_WIDTHS.name }]}>NAME</Text>
                 <Text style={[styles.headerCell, { width: COL_WIDTHS.email }]}>EMAIL</Text>
                 <Text style={[styles.headerCell, { width: COL_WIDTHS.phone }]}>PHONE</Text>
+                <Text style={[styles.headerCell, { width: COL_WIDTHS.role }]}>ROLE</Text>
+                <Text style={[styles.headerCell, { width: COL_WIDTHS.status }]}>STATUS</Text>
               </View>
 
               {/* Table Body */}
               {isFetching ? (
                 <View style={styles.centerContainer}>
-                  <ActivityIndicator size="large" color={PURPLE} />
-                  <Text style={styles.loadingText}>Loading data...</Text>
+                  <ActivityIndicator size="large" color={BLUE} />
+                  <Text style={styles.loadingText}>Loading users...</Text>
                 </View>
               ) : error ? (
                 <View style={styles.centerContainer}>
                   <View style={styles.errorIconWrap}>
                     <Ionicons name="alert-circle" size={32} color="#EF4444" />
                   </View>
-                  <Text style={styles.errorText}>Failed to load records</Text>
+                  <Text style={styles.errorText}>Failed to load users</Text>
                   <Text style={styles.errorSubText}>
                     Please check your connection and try again
                   </Text>
@@ -175,13 +210,13 @@ export default function MissingListScreen() {
                   ListEmptyComponent={
                     <View style={styles.centerContainer}>
                       <View style={styles.emptyIconWrap}>
-                        <Ionicons name="people-outline" size={32} color={PURPLE} />
+                        <Ionicons name="people-outline" size={32} color={BLUE} />
                       </View>
-                      <Text style={styles.emptyText}>No records found</Text>
+                      <Text style={styles.emptyText}>No users found</Text>
                       <Text style={styles.emptySubText}>
                         {search
                           ? 'Try adjusting your search filters'
-                          : 'No missing cases are currently active'}
+                          : 'No users are currently available'}
                       </Text>
                     </View>
                   }
@@ -199,7 +234,7 @@ export default function MissingListScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PURPLE_BG,
+    backgroundColor: BLUE_BG,
   },
   header: {
     flexDirection: 'row',
@@ -213,7 +248,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: PURPLE_LIGHT,
+    backgroundColor: BLUE_LIGHT,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -276,7 +311,7 @@ const styles = StyleSheet.create({
   },
   tableHeaderRow: {
     flexDirection: 'row',
-    backgroundColor: '#F9FAFB',
+    backgroundColor: '#F9FAFB', // Subtler gray for enterprise look
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     paddingVertical: 14,
@@ -322,20 +357,39 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: PURPLE_LIGHT,
+    backgroundColor: BLUE_MID,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarText: {
     fontSize: 14,
     fontWeight: '700',
-    color: PURPLE,
+    color: BLUE,
+  },
+  statusBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 20,
+    alignSelf: 'flex-start',
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   centerContainer: {
     paddingVertical: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    width: Object.values(COL_WIDTHS).reduce((a, b) => a + b, 0),
+    width: Object.values(COL_WIDTHS).reduce((a, b) => a + b, 0), // Span full table width
   },
   emptyContainer: {
     flexGrow: 1,
@@ -369,7 +423,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: PURPLE_LIGHT,
+    backgroundColor: BLUE_LIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -385,3 +439,4 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
 });
+ 

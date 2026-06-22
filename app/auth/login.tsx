@@ -71,7 +71,7 @@ export default function LoginScreen() {
     formState: { isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      phone: '9876543234',
+      phone: '9876543210',
       password: '123456',
     },
   });
