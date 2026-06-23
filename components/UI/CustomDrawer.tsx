@@ -1,4 +1,4 @@
-import { Ionicons, Octicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { LinearGradient } from 'expo-linear-gradient';
 import { usePathname, useRouter } from 'expo-router';
@@ -65,8 +65,8 @@ export function CustomDrawerContent(props: any) {
     {
       route: 'users',
       label: 'Users',
-      icon: 'people' as const,
-      iconLib: 'ionicons' as const,
+      icon: 'police-badge' as const,
+      iconLib: 'materialcommunityicons' as const,
       activeColor: '#2563EB',
       activeBg: '#EFF6FF',
       activeBorder: 'rgba(37, 99, 235, 0.3)',
@@ -173,7 +173,14 @@ export function CustomDrawerContent(props: any) {
         showsVerticalScrollIndicator={false}>
         {/* NAVIGATION SECTION */}
         <View style={{ paddingHorizontal: 14 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, paddingHorizontal: 4 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              marginBottom: 12,
+              paddingHorizontal: 4,
+            }}>
             <LinearGradient
               colors={['#0DB893', '#0891B2']}
               start={{ x: 0, y: 0 }}
@@ -246,6 +253,8 @@ export function CustomDrawerContent(props: any) {
                       }}>
                       {item.iconLib === 'octicons' ? (
                         <Octicons name={item.icon as any} size={18} color="#FFFFFF" />
+                      ) : item.iconLib === 'materialcommunityicons' ? (
+                        <MaterialCommunityIcons name={item.icon as any} size={18} color="#FFFFFF" />
                       ) : (
                         <Ionicons name={item.icon as any} size={18} color="#FFFFFF" />
                       )}
@@ -262,6 +271,8 @@ export function CustomDrawerContent(props: any) {
                       }}>
                       {item.iconLib === 'octicons' ? (
                         <Octicons name={item.icon as any} size={18} color="#94A3B8" />
+                      ) : item.iconLib === 'materialcommunityicons' ? (
+                        <MaterialCommunityIcons name={item.icon as any} size={18} color="#94A3B8" />
                       ) : (
                         <Ionicons name={item.icon as any} size={18} color="#94A3B8" />
                       )}
@@ -285,49 +296,18 @@ export function CustomDrawerContent(props: any) {
               </TouchableOpacity>
             );
           })}
-
-          {/* Notifications */}
-          <TouchableOpacity
-            onPress={() => {
-              props.navigation.closeDrawer();
-              openNotificationPanel();
-            }}
-            activeOpacity={0.7}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderRadius: 14,
-              paddingHorizontal: 14,
-              paddingVertical: 13,
-              marginBottom: 6,
-              backgroundColor: '#FFFFFF',
-              borderWidth: 1,
-              borderColor: '#F1F5F9',
-            }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-              <View
-                style={{
-                  height: 38,
-                  width: 38,
-                  borderRadius: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: '#F1F5F9',
-                }}>
-                <Ionicons name="notifications" size={18} color="#94A3B8" />
-              </View>
-              <Text style={{ marginLeft: 12, fontSize: 14, fontWeight: '600', color: '#374151' }}>
-                Notifications
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={15} color="#CBD5E1" />
-          </TouchableOpacity>
         </View>
 
         {/* SUPPORT SECTION */}
         <View style={{ paddingHorizontal: 14, marginTop: 20 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12, paddingHorizontal: 4 }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 8,
+              marginBottom: 12,
+              paddingHorizontal: 4,
+            }}>
             <LinearGradient
               colors={['#6366F1', '#8B5CF6']}
               start={{ x: 0, y: 0 }}

@@ -14,7 +14,6 @@ export const getUsers = async () => {
 
 // GET LOCATION
 export const getLocation = async (payload: any) => {
-  console.log(payload, 'payload');
   const { data } = await api.post('/tracking', payload);
   return data;
 };

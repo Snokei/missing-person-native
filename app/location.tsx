@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { BLUE, BLUE_BG, BLUE_LIGHT, BLUE_MID } from 'components/core/const';
 import { ScreenTransition } from 'components/UI/ScreenTransition';
 import { useLocationTracking } from 'hooks/useLocationTracking';
+import { useMemo } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTracking } from 'services/getLocation';
 
@@ -13,12 +14,18 @@ export default function LocationScreen() {
     ? new Date(savedLocation.timestamp).toLocaleString()
     : null;
 
-  const payload = {
-    user_id: userInfo?.user?.id,
-    latitude: savedLocation?.latitude,
-    longitude: savedLocation?.longitude,
-  };
-  useTracking(payload);
+  const trackingPayload = useMemo(
+    () => ({
+      user_id: userInfo?.user?.id,
+      latitude: savedLocation?.latitude,
+      longitude: savedLocation?.longitude,
+    }),
+    [savedLocation?.latitude, savedLocation?.longitude, userInfo?.user?.id]
+  );
+
+  // GET TRACKED
+  useTracking(trackingPayload);
+
   return (
     <ScreenTransition>
       <SafeAreaView style={styles.safeArea}>
