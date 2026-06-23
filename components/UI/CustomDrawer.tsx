@@ -17,6 +17,7 @@ export function CustomDrawerContent(props: any) {
     if (route === 'missing' && pathname === '/missing') return true;
     if (route === 'missing-list' && pathname === '/missing-list') return true;
     if (route === 'users' && pathname === '/users') return true;
+    if (route === 'SettingsScreen' && pathname === '/SettingsScreen') return true;
     return false;
   };
 
@@ -70,6 +71,15 @@ export function CustomDrawerContent(props: any) {
       activeColor: '#2563EB',
       activeBg: '#EFF6FF',
       activeBorder: 'rgba(37, 99, 235, 0.3)',
+    },
+    {
+      route: 'SettingsScreen',
+      label: 'Settings',
+      icon: 'settings' as const,
+      iconLib: 'ionicons' as const,
+      activeColor: '#8B5CF6',
+      activeBg: '#F5F3FF',
+      activeBorder: 'rgba(139, 92, 246, 0.3)',
     },
   ];
 
@@ -327,12 +337,16 @@ export function CustomDrawerContent(props: any) {
           </View>
 
           {[
-            { icon: 'settings' as const, label: 'Settings' },
-            { icon: 'help-circle' as const, label: 'Help & Support' },
+            { icon: 'settings' as const, label: 'Settings', route: 'SettingsScreen' },
+            { icon: 'help-circle' as const, label: 'Help & Support', route: null },
           ].map((item) => (
             <TouchableOpacity
               key={item.label}
-              onPress={() => {}}
+              onPress={() => {
+                if (item.route) {
+                  handleNavigation(item.route);
+                }
+              }}
               activeOpacity={0.7}
               style={{
                 flexDirection: 'row',

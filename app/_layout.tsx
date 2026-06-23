@@ -105,6 +105,17 @@ export default function RootLayout() {
                   headerRight: () => <NotificationBell />,
                 }}
               />
+              <Drawer.Screen
+                name="SettingsScreen"
+                options={{
+                  title: '',
+                  drawerLabel: 'Settings',
+                  headerStyle: { backgroundColor: '#FFFFFF' },
+                  headerLeft: defaultHeaderLeft,
+                  headerRight: () => <NotificationBell />,
+                }}
+              />
+              <Drawer.Screen name="settings" options={hiddenDrawerScreen} />
             </Drawer>
           </NotificationProvider>
         </AlertProvider>
