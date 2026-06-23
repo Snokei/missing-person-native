@@ -3,7 +3,7 @@ import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { LinearGradient } from 'expo-linear-gradient';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { useNotificationPanel } from './NotificationPanel';
 
 export function CustomDrawerContent(props: any) {
@@ -71,15 +71,6 @@ export function CustomDrawerContent(props: any) {
       activeColor: '#2563EB',
       activeBg: '#EFF6FF',
       activeBorder: 'rgba(37, 99, 235, 0.3)',
-    },
-    {
-      route: 'SettingsScreen',
-      label: 'Settings',
-      icon: 'settings' as const,
-      iconLib: 'ionicons' as const,
-      activeColor: '#8B5CF6',
-      activeBg: '#F5F3FF',
-      activeBorder: 'rgba(139, 92, 246, 0.3)',
     },
   ];
 
@@ -308,7 +299,7 @@ export function CustomDrawerContent(props: any) {
           })}
         </View>
 
-        {/* SUPPORT SECTION */}
+        {/* SETTINGS SECTION */}
         <View style={{ paddingHorizontal: 14, marginTop: 20 }}>
           <View
             style={{
@@ -332,23 +323,15 @@ export function CustomDrawerContent(props: any) {
                 textTransform: 'uppercase',
                 letterSpacing: 1.2,
               }}>
-              Support & Settings
+              Settings
             </Text>
           </View>
 
-          {[
-            { icon: 'settings' as const, label: 'Settings', route: 'SettingsScreen' },
-            { icon: 'help-circle' as const, label: 'Help & Support', route: null },
-          ].map((item) => (
-            <TouchableOpacity
-              key={item.label}
-              onPress={() => {
-                if (item.route) {
-                  handleNavigation(item.route);
-                }
-              }}
-              activeOpacity={0.7}
-              style={{
+          <TouchableOpacity
+            onPress={() => handleNavigation('SettingsScreen')}
+            activeOpacity={0.7}
+            style={[
+              {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -356,29 +339,55 @@ export function CustomDrawerContent(props: any) {
                 paddingHorizontal: 14,
                 paddingVertical: 13,
                 marginBottom: 6,
-                backgroundColor: '#FFFFFF',
                 borderWidth: 1,
-                borderColor: '#F1F5F9',
-              }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                <View
-                  style={{
-                    height: 38,
-                    width: 38,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#F1F5F9',
-                  }}>
-                  <Ionicons name={item.icon} size={18} color="#94A3B8" />
-                </View>
-                <Text style={{ marginLeft: 12, fontSize: 14, fontWeight: '600', color: '#374151' }}>
-                  {item.label}
-                </Text>
+              },
+              isActive('SettingsScreen')
+                ? {
+                    backgroundColor: '#EEF2FF',
+                    borderColor: 'rgba(99, 102, 241, 0.3)',
+                    shadowColor: '#6366F1',
+                    shadowOpacity: 0.12,
+                    shadowRadius: 6,
+                    shadowOffset: { width: 0, height: 3 },
+                    elevation: 3,
+                  }
+                : {
+                    backgroundColor: '#FFFFFF',
+                    borderColor: '#F1F5F9',
+                  },
+            ]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+              <View
+                style={{
+                  height: 38,
+                  width: 38,
+                  borderRadius: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: isActive('SettingsScreen') ? '#6366F1' : '#F1F5F9',
+                }}>
+                <Ionicons
+                  name="settings"
+                  size={18}
+                  color={isActive('SettingsScreen') ? '#FFFFFF' : '#94A3B8'}
+                />
               </View>
-              <Ionicons name="chevron-forward" size={15} color="#CBD5E1" />
-            </TouchableOpacity>
-          ))}
+              <Text
+                style={[
+                  { marginLeft: 12, fontSize: 14 },
+                  isActive('SettingsScreen')
+                    ? { fontWeight: '700', color: '#6366F1' }
+                    : { fontWeight: '600', color: '#374151' },
+                ]}>
+                Settings
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={15}
+              color={isActive('SettingsScreen') ? '#6366F1' : '#CBD5E1'}
+            />
+          </TouchableOpacity>
         </View>
       </DrawerContentScrollView>
 
@@ -392,8 +401,21 @@ export function CustomDrawerContent(props: any) {
         }}>
         <TouchableOpacity
           onPress={() => {
-            props.navigation.closeDrawer();
-            router.replace('/auth/login');
+            Alert.alert(
+              'Sign Out',
+              'Are you sure you want to sign out?',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Sign Out',
+                  style: 'destructive',
+                  onPress: () => {
+                    props.navigation.closeDrawer();
+                    router.replace('/auth/login');
+                  },
+                },
+              ]
+            );
           }}
           activeOpacity={0.85}
           style={{ borderRadius: 14, overflow: 'hidden' }}>

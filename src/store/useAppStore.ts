@@ -14,12 +14,10 @@ export interface AlertConfig {
 interface AppState {
   userInfo: any;
   showAlert: AlertConfig;
-  isDarkMode: boolean;
   isBiometricsEnabled: boolean;
   setLoginUser: (user: any) => void;
   // Partial allows you to pass only the fields you want to update
   setShowAlert: (alertData: Partial<AlertConfig>) => void;
-  toggleTheme: () => void;
   setBiometrics: (enabled: boolean) => void;
   logoutUser: () => void;
 }
@@ -45,7 +43,6 @@ export const useAppStore = create<AppState>()(
         type: 'info',
         visible: false,
       },
-      isDarkMode: false,
       isBiometricsEnabled: false,
 
       // Actions
@@ -58,11 +55,6 @@ export const useAppStore = create<AppState>()(
             ...alertData,
           },
         })),
-      toggleTheme: () =>
-        set((state) => {
-          const nextTheme = !state.isDarkMode;
-          return { isDarkMode: nextTheme };
-        }),
       setBiometrics: (enabled) => set({ isBiometricsEnabled: enabled }),
       logoutUser: () => set({ userInfo: null, isBiometricsEnabled: false }),
     }),
@@ -70,7 +62,6 @@ export const useAppStore = create<AppState>()(
       name: 'app-global-storage',
       storage: createJSONStorage(() => AsyncStorage),
       partialize: (state) => ({
-        isDarkMode: state.isDarkMode,
         isBiometricsEnabled: state.isBiometricsEnabled,
       }),
     }

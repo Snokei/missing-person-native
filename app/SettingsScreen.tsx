@@ -81,8 +81,7 @@ export const SettingsItem: React.FC<SettingsItemProps> = ({
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { userInfo, isDarkMode, toggleTheme, isBiometricsEnabled, setBiometrics, logoutUser } =
-    useAppStore();
+  const { userInfo, isBiometricsEnabled, setBiometrics, logoutUser } = useAppStore();
   const [bioSupported, setBioSupported] = useState(false);
   const [appVersion, setAppVersion] = useState('1.0.0 (1)');
   const { first_name, last_name, phone } = userInfo?.user || {};
@@ -186,26 +185,6 @@ export default function SettingsScreen() {
               </View>
             </View>
 
-            {/* PREFERENCES Section */}
-            <View style={styles.section}>
-              <Text style={styles.sectionLabel}>PREFERENCES</Text>
-              <View style={styles.sectionCard}>
-                <SettingsItem
-                  icon="moon-outline"
-                  title="Dark Interface Theme"
-                  type="switch"
-                  switchValue={isDarkMode}
-                  onSwitchChange={toggleTheme}
-                />
-                <View style={styles.sectionDivider} />
-                <SettingsItem
-                  icon="information-circle-outline"
-                  title="About Corporate"
-                  onPress={() => router.push('/settings/about')}
-                />
-              </View>
-            </View>
-
             {/* SUPPORT Section */}
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>SUPPORT</Text>
@@ -222,6 +201,12 @@ export default function SettingsScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>APPLICATION</Text>
               <View style={styles.sectionCard}>
+                <SettingsItem
+                  icon="information-circle-outline"
+                  title="About Corporate"
+                  onPress={() => router.push('/settings/about')}
+                />
+                <View style={styles.sectionDivider} />
                 <SettingsItem
                   icon="phone-portrait-outline"
                   title="App Version"
