@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AlertProvider } from '../components/helpers/ShowAlert';
 import { NotificationGate } from '../components/NotificationGate';
 import { CustomDrawerContent } from '../components/UI/CustomDrawer';
+import { LocationProvider } from '../components/LocationProvider';
 import { DrawerHamburgerHeader } from '../components/UI/DrawerHamburgerHeader';
 import { NotificationBell, NotificationProvider } from '../components/UI/NotificationPanel';
 import '../global.css';
@@ -32,7 +33,8 @@ export default function RootLayout() {
         <NotificationGate>
           <AlertProvider>
             <NotificationProvider>
-              <Drawer
+              <LocationProvider>
+                <Drawer
                 drawerContent={(props) => <CustomDrawerContent {...props} />}
                 screenOptions={{
                   headerShown: true,
@@ -118,7 +120,8 @@ export default function RootLayout() {
                   }}
                 />
                 <Drawer.Screen name="settings" options={hiddenDrawerScreen} />
-              </Drawer>
+                </Drawer>
+              </LocationProvider>
             </NotificationProvider>
           </AlertProvider>
         </NotificationGate>

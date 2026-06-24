@@ -2,14 +2,14 @@ import { useAppStore } from '@/store/useAppStore';
 import { Ionicons } from '@expo/vector-icons';
 import { BLUE, BLUE_BG, BLUE_LIGHT, BLUE_MID } from 'components/core/const';
 import { ScreenTransition } from 'components/UI/ScreenTransition';
-import { useLocationTracking } from 'hooks/useLocationTracking';
+import { useLocationContext } from '../components/LocationProvider';
 import { useMemo } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTracking } from 'services/getLocation';
 
 export default function LocationScreen() {
   const userInfo = useAppStore((state) => state.userInfo);
-  const { copyLocation, savedLocation, trackingEnabled, isExpoGo } = useLocationTracking();
+  const { copyLocation, savedLocation, trackingEnabled, isExpoGo } = useLocationContext();
   const lastUpdatedLabel = savedLocation
     ? new Date(savedLocation.timestamp).toLocaleString()
     : null;
