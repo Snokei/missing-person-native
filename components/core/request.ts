@@ -2,7 +2,6 @@ import api from '@/api/axios';
 
 // LOGIN
 export const login = async (payload: { phone: string; password: string }) => {
-  console.log(payload, 'payload');
   const response = await api.post('/users/login', payload);
   return response;
 };

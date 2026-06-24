@@ -1,9 +1,9 @@
 // hooks/useRegisterPushToken.ts
 
+import { registerForPushNotifications } from '@/utils/pushNotifications';
 import { useMutation } from '@tanstack/react-query';
 import { REGISTER_PUSH_TOKEN } from 'components/core/generalConst';
 import { registerPushToken } from 'components/core/request';
-import { registerForPushNotifications } from '@/utils/pushNotifications';
 
 export const useRegisterPushToken = () => {
   const mutation = useMutation({
@@ -11,13 +11,17 @@ export const useRegisterPushToken = () => {
     mutationFn: registerPushToken,
   });
 
-  const register = async (userId: string | number) => {
+  const register = async (data: any) => {
+    const { expo_push_token, id } = data || {};
+
     const expoPushToken = await registerForPushNotifications();
 
     if (!expoPushToken) return;
 
+    if (expo_push_token === expoPushToken) return;
+
     return mutation.mutateAsync({
-      user_id: userId,
+      user_id: id,
       expo_push_token: expoPushToken,
     });
   };

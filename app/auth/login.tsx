@@ -91,7 +91,7 @@ export default function LoginScreen() {
       await AsyncStorage.setItem('auth', JSON.stringify(userData));
       console.log(user);
       // Fire push token registration after login (non-blocking)
-      if (user?.id) {
+      if (user) {
         registerPushToken(user.id).catch((err) =>
           console.warn('Push token registration failed:', err)
         );

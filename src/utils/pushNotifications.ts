@@ -46,8 +46,7 @@ export async function registerForPushNotifications(): Promise<string | undefined
     return;
   }
 
-  const projectId =
-    Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
 
   if (!projectId) {
     console.log('Expo push token requires eas.projectId in app.json extra.eas');
@@ -56,7 +55,7 @@ export async function registerForPushNotifications(): Promise<string | undefined
 
   try {
     const token = await Notifications.getExpoPushTokenAsync({ projectId });
-    console.log('Expo Push Token =>', token.data);
+    // console.log('Expo Push Token =>', token.data);
     return token.data;
   } catch (error) {
     console.log('Push notification error =>', error);
