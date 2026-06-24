@@ -15,6 +15,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getStats } from 'src/data/mockData';
+import { registerForPushNotifications } from 'src/utils/pushNotifications';
 
 function AnimatedFeatureCard({
   icon,
@@ -104,6 +105,10 @@ export default function HomeScreen() {
       bgColor: PURPLE_LIGHT,
     },
   ];
+
+  useEffect(() => {
+    registerForPushNotifications();
+  }, []);
 
   return (
     <ScreenTransition>
