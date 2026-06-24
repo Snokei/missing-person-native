@@ -74,7 +74,7 @@ export default function LoginScreen() {
     formState: { isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      phone: '9876543233',
+      phone: '8349979964',
       password: '123456',
     },
   });
@@ -89,10 +89,9 @@ export default function LoginScreen() {
       };
       setLoginUser(userData);
       await AsyncStorage.setItem('auth', JSON.stringify(userData));
-      console.log(user);
       // Fire push token registration after login (non-blocking)
-      if (user) {
-        registerPushToken(user.id).catch((err) =>
+      if (user.id) {
+        registerPushToken(user).catch((err) =>
           console.warn('Push token registration failed:', err)
         );
       }

@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { Alert, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,7 +12,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function ensureNotificationPermissions(): Promise<boolean> {
+export async function requestNotificationPermissions(): Promise<boolean> {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -28,21 +28,13 @@ export async function ensureNotificationPermissions(): Promise<boolean> {
     finalStatus = status;
   }
 
-  if (finalStatus !== 'granted') {
-    Alert.alert(
-      'Notification permission needed',
-      'Please allow notifications so the app can send you alerts about missing persons.'
-    );
-    return false;
-  }
-
-  return true;
+  return finalStatus === 'granted';
 }
 
 export async function registerForPushNotifications(): Promise<string | undefined> {
-  const granted = await ensureNotificationPermissions();
+  const { status } = await Notifications.getPermissionsAsync();
 
-  if (!granted) {
+  if (status !== 'granted') {
     return;
   }
 

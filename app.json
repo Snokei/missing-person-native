@@ -37,6 +37,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.missingfinder.app",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "This app needs your location to access the device GPS.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs background location access to keep tracking GPS when you switch apps.",
@@ -50,6 +51,7 @@
     },
     "android": {
       "package": "com.missingfinder.app",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

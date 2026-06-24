@@ -23,6 +23,7 @@ export const registerPushToken = async (payload: {
   user_id: string | number;
   expo_push_token: string;
 }) => {
+  console.log(payload, 'payload');
   const { data } = await api.post('/users/token', payload);
   return data;
 };

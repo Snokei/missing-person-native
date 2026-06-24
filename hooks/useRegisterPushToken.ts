@@ -13,13 +13,11 @@ export const useRegisterPushToken = () => {
 
   const register = async (data: any) => {
     const { expo_push_token, id } = data || {};
-
     const expoPushToken = await registerForPushNotifications();
 
     if (!expoPushToken) return;
 
     if (expo_push_token === expoPushToken) return;
-
     return mutation.mutateAsync({
       user_id: id,
       expo_push_token: expoPushToken,
