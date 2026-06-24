@@ -21,6 +21,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { login } from '../../components/core/request';
 import { useAlertPanel } from '../../components/helpers/ShowAlert';
+import { useRegisterPushToken } from '../../hooks/useRegisterPushToken';
 
 type LoginFormValues = {
   phone: string;
@@ -63,6 +64,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const { showAlert } = useAlertPanel();
   const setLoginUser = useAppStore((state) => state.setLoginUser);
+  const { register: registerPushToken } = useRegisterPushToken();
 
   const isFetching = false;
 
@@ -72,7 +74,7 @@ export default function LoginScreen() {
     formState: { isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      phone: '9876543210',
+      phone: '9876543233',
       password: '123456',
     },
   });
@@ -87,6 +89,14 @@ export default function LoginScreen() {
       };
       setLoginUser(userData);
       await AsyncStorage.setItem('auth', JSON.stringify(userData));
+
+      // Fire push token registration after login (non-blocking)
+      if (user?.id) {
+        registerPushToken(user.id).catch((err) =>
+          console.warn('Push token registration failed:', err)
+        );
+      }
+
       router.replace('/home');
     } catch (error: any) {
       const message = error?.response?.data?.message || 'Something went wrong';

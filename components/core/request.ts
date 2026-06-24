@@ -18,3 +18,12 @@ export const getLocation = async (payload: any) => {
   const { data } = await api.post('/tracking', payload);
   return data;
 };
+
+// REGISTER PUSH TOKEN
+export const registerPushToken = async (payload: {
+  user_id: string | number;
+  expo_push_token: string;
+}) => {
+  const { data } = await api.post('/users/token', payload);
+  return data;
+};
