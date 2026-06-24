@@ -89,7 +89,7 @@ export default function LoginScreen() {
       };
       setLoginUser(userData);
       await AsyncStorage.setItem('auth', JSON.stringify(userData));
-
+      console.log(user);
       // Fire push token registration after login (non-blocking)
       if (user?.id) {
         registerPushToken(user.id).catch((err) =>

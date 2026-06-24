@@ -15,7 +15,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { getStats } from 'src/data/mockData';
-import { registerForPushNotifications } from 'src/utils/pushNotifications';
+import { registerForPushNotifications } from '@/utils/pushNotifications';
 
 function AnimatedFeatureCard({
   icon,

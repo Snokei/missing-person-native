@@ -4,7 +4,9 @@ import 'react-native-gesture-handler';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BLUE_BG, PURPLE_BG, TEAL_BG } from 'components/core/const';
 import { Drawer } from 'expo-router/drawer';
+import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ensureNotificationPermissions } from '../src/utils/pushNotifications';
 import { AlertProvider } from '../components/helpers/ShowAlert';
 import { CustomDrawerContent } from '../components/UI/CustomDrawer';
 import { DrawerHamburgerHeader } from '../components/UI/DrawerHamburgerHeader';
@@ -25,6 +27,10 @@ function defaultHeaderLeft() {
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  useEffect(() => {
+    void ensureNotificationPermissions();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
